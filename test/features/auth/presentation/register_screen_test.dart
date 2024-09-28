@@ -50,17 +50,12 @@ void main() {
 
   testWidgets('Shows loading indicator during registration',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp.router(routerConfig: router),
-    );
-
-    router.go('/register');
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(const MaterialApp(home: RegisterScreen()));
 
     await tester.enterText(find.byType(AuthTextField).at(0), 'username');
     await tester.enterText(find.byType(AuthTextField).at(1), 'email@gmail.com');
-    await tester.enterText(find.byType(AuthTextField).at(2), 'password');
-    await tester.enterText(find.byType(AuthTextField).at(3), 'password');
+    await tester.enterText(find.byType(AuthTextField).at(2), 'Password12');
+    await tester.enterText(find.byType(AuthTextField).at(3), 'Password12');
     await tester.enterText(find.byType(AuthTextField).at(4), '1234567890');
 
     await tester.tap(find.byType(PrimaryButton).first);
@@ -72,6 +67,7 @@ void main() {
       Future.delayed(const Duration(seconds: 3));
     });
     await tester.pumpAndSettle();
+
     
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
