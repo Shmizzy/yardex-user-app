@@ -4,7 +4,7 @@ import 'package:yardex_user/app.dart';
 
 void main() {
   runApp(
-    const ProviderScope(
+     const ProviderScope(
       child: MainApp(),
     ),
   );

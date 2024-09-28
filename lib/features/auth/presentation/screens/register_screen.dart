@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:yardex_user/features/auth/data/models/user_model.dart';
+import 'package:yardex_user/shared/utils/validators.dart';
 import 'package:yardex_user/shared/widgets/auth_text_field.dart';
 import 'package:yardex_user/shared/widgets/primary_button.dart';
+import 'package:yardex_user/features/auth/presentation/providers/auth_provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _phoneNumberController = TextEditingController();
-
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,38 +34,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        _isLoading = true;
-      });
+      final newUser = UserModel(
+        username: _usernameController.text,
+        email: _emailController.text,
+        phoneNumber: _phoneNumberController.text,
+      );
+      final password = _passwordController.text;
 
       try {
-        await Future.delayed(const Duration(seconds: 2));
-
-        // test error
-        // throw Exception('Simulated registration error');
-
-        // register
+        await ref
+            .read(authNotifierProvider.notifier)
+            .register(newUser, password);
         context.go('/home');
       } catch (e) {
-        // error
         showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text('Failed to register user.'),
-                  content: Text(e.toString()),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ));
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Failed to register user.'),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
     }
   }
@@ -72,56 +70,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     context.go('/');
   }
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    }
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
-    }
-
-    if (!RegExp(r'[a-z]').hasMatch(value)) {
-      return 'Password must contain at least one lowercase letter';
-    }
-    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-      return 'Password must contain at least one uppercase letter';
-    }
-    if (!RegExp(r'\d').hasMatch(value)) {
-      return 'Password must contain at least one number';
-    }
-    return null;
-  }
-
-  String? _validatePhoneNumber(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your phone number';
-    }
-    final phoneRegex = RegExp(r'^\+?[1-9]\d{1,14}$');
-    if (!phoneRegex.hasMatch(value)) {
-      return 'Please enter a valid phone number in E.164 format (e.g., +1234567890)';
-    }
-    if (value.length < 10) {
-      return 'Phone number must be at least 10 digits long';
-    }
-    if (value.length > 16) { 
-      return 'Phone number must be at most 15 digits long';
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.read(authNotifierProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: Stack(children: [
@@ -148,14 +99,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     labelText: 'Email',
                     hintText: 'Enter your email',
                     controller: _emailController,
-                    validator: _validateEmail),
+                    validator: validateEmail),
                 const SizedBox(height: 20.0),
                 AuthTextField(
                   labelText: 'Password',
                   hintText: 'Enter your password',
                   obscureText: true,
                   controller: _passwordController,
-                  validator: _validatePassword,
+                  validator: validatePassword,
                 ),
                 const SizedBox(height: 20.0),
                 AuthTextField(
@@ -178,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   labelText: 'Phone Number',
                   hintText: 'Enter your phone number',
                   controller: _phoneNumberController,
-                  validator: _validatePhoneNumber,
+                  validator: validatePhoneNumber,
                 ),
                 const SizedBox(height: 20.0),
                 PrimaryButton(
@@ -194,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
-        if (_isLoading)
+        if (isLoading)
           Container(
             color: Colors.black.withOpacity(0.5),
             child: const Center(
