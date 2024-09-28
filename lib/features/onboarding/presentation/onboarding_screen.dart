@@ -23,9 +23,9 @@ class OnboardingScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                context.go('/home');
+                context.go('/register');
               },
-              child: const Text('Continue as Guest'),
+              child: const Text('Register'),
             ),
           ],
         ),

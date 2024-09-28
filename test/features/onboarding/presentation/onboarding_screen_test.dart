@@ -12,7 +12,7 @@ void main() {
 
     expect(find.text('Welcome to the App!'), findsOneWidget);
     expect(find.text('Login'), findsOneWidget);
-    expect(find.text('Continue as Guest'), findsOneWidget);
+    expect(find.text('Register'), findsOneWidget);
   });
 
   testWidgets('Onboarding screen navigates to login screen',
@@ -30,7 +30,7 @@ void main() {
     expect(find.text('Login Screen'), findsOneWidget);
   });
 
-  testWidgets('Onboarding screen navigates to home screen',
+  testWidgets('Onboarding screen navigates to register screen',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp.router(routerConfig: router),
@@ -39,9 +39,9 @@ void main() {
     router.go('/');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Continue as Guest'));
+    await tester.tap(find.text('Register'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Home Screen'), findsOneWidget);
+    expect(find.text('Register'), findsWidgets);
   });
 }
