@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:yardex_user/core/errors/exceptions.dart';
 import 'package:yardex_user/features/auth/data/models/user_model.dart';
 
 class AuthService {
@@ -21,8 +22,37 @@ class AuthService {
       }),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to register user: ${response.body}');
+    if (response.statusCode == 400) {
+      throw ValidationException('Invalid input');
+    } else if (response.statusCode == 401) {
+      throw AuthException('User already exists');
+    } else if (response.statusCode == 500) {
+      throw ServerException('Server error');
+    } else if (response.statusCode != 200) {
+      throw NetworkException('Failed to register user: ${response.body}');
+    }
+  }
+
+  Future<void> login(String username, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/login'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 400) {
+      throw ValidationException('Invalid input');
+    } else if (response.statusCode == 401) {
+      throw AuthException('Invalid credentials');
+    } else if (response.statusCode == 500) {
+      throw ServerException('Server error');
+    } else if (response.statusCode != 200) {
+      throw NetworkException('Failed to login: ${response.body}');
     }
   }
 }
