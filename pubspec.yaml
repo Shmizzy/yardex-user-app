@@ -7,6 +7,9 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  amplify_api: ^2.4.1
+  amplify_auth_cognito: ^2.4.1
+  amplify_flutter: ^2.4.1
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.5.1
