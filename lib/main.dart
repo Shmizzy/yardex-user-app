@@ -10,7 +10,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await _configureAmplify();
   runApp(
-    const ProviderScope(
+     const ProviderScope(
       child: MainApp(),
     ),
   );
