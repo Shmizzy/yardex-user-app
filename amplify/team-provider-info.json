@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-yardexuser-dev-b8891-authRole",
+      "UnauthRoleArn": "arn:aws:iam::992382374646:role/amplify-yardexuser-dev-b8891-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::992382374646:role/amplify-yardexuser-dev-b8891-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-yardexuser-dev-b8891-deployment",
+      "UnauthRoleName": "amplify-yardexuser-dev-b8891-unauthRole",
+      "StackName": "amplify-yardexuser-dev-b8891",
+      "StackId": "arn:aws:cloudformation:us-east-1:992382374646:stack/amplify-yardexuser-dev-b8891/23b7e970-8298-11ef-a726-123ef185e0ad",
+      "AmplifyAppId": "dxezgja6ycx3h"
+    }
+  }
+}
