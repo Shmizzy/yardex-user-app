@@ -34,6 +34,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
+      final isLoading = ref.read(authNotifierProvider);
       final newUser = UserModel(
         username: _usernameController.text,
         email: _emailController.text,
@@ -45,7 +46,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         await ref
             .read(authNotifierProvider.notifier)
             .register(newUser, password);
-        context.go('/home');
+        print(isLoading);
+        context.go('/confirm');
       } catch (e) {
         showDialog(
           context: context,
@@ -72,7 +74,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.read(authNotifierProvider);
+    final isLoading = ref.watch(authNotifierProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Register')),
       body: Stack(children: [

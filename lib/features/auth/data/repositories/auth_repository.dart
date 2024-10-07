@@ -11,4 +11,8 @@ class AuthRepository {
   Future<void> register(UserModel user, String password) async {
     await authService.register(user, password);
   }
+
+  Future<void> confirmUser(String username, String confirmationCode) async {
+    await authService.confirmUser(username, confirmationCode);
+  }
 }
